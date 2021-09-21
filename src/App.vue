@@ -24,11 +24,12 @@ h1,h2,h3,h4,h5,h6{
 }
 
 header{
-  height: 137px;
+  height: 80px;
   background: #d0f0c0;
   display: flex;
-  align-items: center;
-  justify-content: space-around;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  padding-top: 15px;
 }
 
 .header__content{
@@ -46,13 +47,14 @@ header{
 .links{
   width: 300px;
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
 }
 
 .links a{
   color: #2c3e50;
   font-size: 18px;
   font-weight: bold;
+  padding-left: 15px;
 }
 
 .links a:hover{

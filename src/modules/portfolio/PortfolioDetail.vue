@@ -10,6 +10,7 @@
     </div>
   </header>
   <hr />
+
   <!-- New Asset -->
   <div v-if="itemModal" class="portfolio__item new__item">
     <div class="info">
@@ -59,7 +60,7 @@
     <!-- Normal assets when edit button is not clicked -->
     <div v-if="asset.id !== targetAsset.id" class="portfolio__item">
       <div class="info">
-        <h3>{{ asset.symbol }}</h3>
+        <h4>{{ asset.symbol }}</h4>
         <p class="mt-3">{{ asset.description }}</p>
       </div>
       <div class="options">
@@ -147,6 +148,7 @@ import formatParams from "@/composables/formatParams";
 import { useStore } from "vuex";
 
 export default {
+  name: 'navbar',
   components: { Modal, Spinner },
   setup() {
     onMounted(async () => {
@@ -367,7 +369,7 @@ export default {
   width: 50%;
   margin: 40px auto;
   background: whitesmoke;
-  padding: 40px 60px;
+  padding: 10px 20px;
   border-radius: 14px;
   box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
   text-align: left;

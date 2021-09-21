@@ -8,9 +8,11 @@
       <router-link to="/logout">Logout</router-link>
     </div>
   </header>
+
   <div>
-    <h2>List of Portfolios</h2>
-    <hr />
+    <!-- <h2>List of Portfolios</h2>
+    <hr /> -->
+
     <!-- New Portfolio -->
     <div v-if="itemModal" class="portfolio__item new__item">
       <div class="info">
@@ -48,6 +50,7 @@
 
     <!-- List of portfolios -->
     <div v-for="portfolio in portfolioList" :key="portfolio.port_id">
+
       <!-- Normal Portfolios -->
       <div
         v-if="portfolio.port_id != targetPortfolio.port_id"
@@ -55,9 +58,9 @@
         @click.self="redirectPortfolioDetail(portfolio)"
       >
         <div class="info">
-          <h3 @click.self="redirectPortfolioDetail(portfolio)">
+          <h4 @click.self="redirectPortfolioDetail(portfolio)">
             {{ portfolio.title }}
-          </h3>
+          </h4>
           <p class="mt-3" @click.self="redirectPortfolioDetail(portfolio)">
             {{ portfolio.description }}
           </p>
@@ -76,6 +79,7 @@
           ></i>
         </div>
       </div>
+
       <!-- When edit button is pressed, show this -->
       <div v-else class="portfolio__item">
         <div class="info">
@@ -113,14 +117,18 @@
         </div>
       </div>
     </div>
+
     <Modal
       v-if="showModal"
       :data="targetPortfolio"
       @toggleModal="showModal = !showModal"
       @confirmDelete="confirmDelete"
     />
+
   </div>
+
   <Spinner v-if="showSpinner" />
+
 </template>
 
 <script>
@@ -287,6 +295,7 @@ export default {
     };
 
     const prepareData = (d) => {
+      
       let data = JSON.parse(d);
 
       // convert the object into array of description, name, owner_id
@@ -342,7 +351,7 @@ export default {
   width: 50%;
   margin: 40px auto;
   background: whitesmoke;
-  padding: 40px 60px;
+  padding: 20px 40px;
   border-radius: 14px;
   box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
   text-align: left;
