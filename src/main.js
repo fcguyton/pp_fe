@@ -6,6 +6,8 @@ import store from './store'
 import authModule from './modules/auth';
 import portfolioModule from './modules/portfolio';
 
+import VueApexCharts from "vue3-apexcharts";
+
 import { registerModules } from "./register-modules";
 
 registerModules({
@@ -13,4 +15,4 @@ registerModules({
     portfolio: portfolioModule
   });
 
-createApp(App).use(store).use(router).mount('#app')
+createApp(App).use(store).use(router).use(VueApexCharts).mount('#app')

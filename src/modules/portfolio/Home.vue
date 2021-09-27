@@ -10,8 +10,6 @@
   </header>
 
   <div>
-    <!-- <h2>List of Portfolios</h2>
-    <hr /> -->
 
     <!-- New Portfolio -->
     <div v-if="itemModal" class="portfolio__item new__item">
@@ -20,14 +18,14 @@
           <input
             type="text"
             placeholder="Enter portfolio name"
-            v-model="newPortfolio.title"
+            v-model.trim="newPortfolio.title"
           />
         </h3>
         <p class="mt-3">
           <input
             type="text"
             placeholder="Enter a description of the portfolio"
-            v-model="newPortfolio.description"
+            v-model.trim="newPortfolio.description"
           />
         </p>
       </div>
@@ -88,7 +86,7 @@
               type="text"
               :class="{ 'is-invalid': !targetPortfolio.title }"
               placeholder="Enter Portfolio Name"
-              v-model="targetPortfolio.title"
+              v-model.trim="targetPortfolio.title"
             />
           </h3>
           <p class="mt-3">
@@ -96,7 +94,7 @@
               type="text"
               :class="{ 'is-invalid': !targetPortfolio.description }"
               placeholder="Enter a description for portfolio"
-              v-model="targetPortfolio.description"
+              v-model.trim="targetPortfolio.description"
             />
           </p>
         </div>
@@ -217,6 +215,9 @@ export default {
     };
 
     const redirectPortfolioDetail = (portfolio) => {
+      store.commit('portfolio/updateTargetPortfolio', portfolio)
+      localStorage.setItem('portfolioTitle', portfolio.title)
+      localStorage.setItem('port_id', portfolio.port_id)
       router.push({
         name: "PortfolioDetail",
         params: { port_id: portfolio.port_id, title: portfolio.title },
@@ -231,8 +232,8 @@ export default {
       ) {
         let params = {
           owner_id: userId,
-          name: newPortfolio.value.title,
-          description: newPortfolio.value.description,
+          name: encodeURIComponent(newPortfolio.value.title),
+          description: encodeURIComponent(newPortfolio.value.description),
         };
         newPortfolio.value = [];
         itemModal.value = false;
@@ -264,8 +265,8 @@ export default {
         // send request to backend
         let params = {
           owner_id: userId,
-          name: targetPortfolio.value.title,
-          description: targetPortfolio.value.description,
+          name: encodeURIComponent(targetPortfolio.value.title),
+          description: encodeURIComponent(targetPortfolio.value.description),
         };
 
         let url =

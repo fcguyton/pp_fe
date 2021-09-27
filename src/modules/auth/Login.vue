@@ -17,7 +17,7 @@
           class="form-control"
           :class="{ 'is-invalid': error.username && !username }"
           placeholder="Enter username"
-          v-model="username"
+          v-model.trim="username"
         />
         <div class="invalid-feedback">
           {{ error.username }}
@@ -31,6 +31,7 @@
           :class="{ 'is-invalid': error.password && !password }"
           placeholder="Enter password"
           v-model="password"
+          @keyup.enter="login"
         />
         <div class="invalid-feedback">
           {{ error.password }}
@@ -40,7 +41,6 @@
     <button
       class="btn btn-lg btn-success mt-3"
       @click="login"
-      :class="{ disabled: !password || !username }"
     >
       Login
     </button>

@@ -1,5 +1,6 @@
 import Home from './Home.vue'
 import PortfolioDetail from './PortfolioDetail'
+import Analysis from './Analysis'
 
 export default {
   routes: [
@@ -12,6 +13,11 @@ export default {
       path: '/portfolio-detail/:port_id/:title',
       name: 'PortfolioDetail',
       component: PortfolioDetail
+    },
+    {
+      path: '/analysis',
+      name: 'Analysis',
+      component: Analysis
     }
   ],
   // router lifecycle hooks that can be used for navigation guards are supported as well

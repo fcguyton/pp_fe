@@ -27,7 +27,7 @@ header{
   height: 80px;
   background: #d0f0c0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-evenly;
   padding-top: 15px;
 }
@@ -35,6 +35,8 @@ header{
 .header__content{
   display: flex;
   align-content: center;
+  flex-direction: column;
+  padding-bottom: 10px;
 }
 
 .heading{
@@ -45,9 +47,10 @@ header{
 }
 
 .links{
-  width: 300px;
+  width: 500px;
   display: flex;
   justify-content: right;
+  align-items: center;
 }
 
 .links a{

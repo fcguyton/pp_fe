@@ -5,11 +5,15 @@
     </div>
     <div class="links">
       <router-link to="/home">Home</router-link>
+      <DropdownList
+        title="Analysis"
+        :options="['Wealth Index', 'Future Index']"
+        @optionSelected="optionSelected"
+      />
       <a href="#" @click="itemModal = true">New</a>
       <router-link to="/logout">Logout</router-link>
     </div>
   </header>
-  <hr />
 
   <!-- New Asset -->
   <div v-if="itemModal" class="portfolio__item new__item">
@@ -18,15 +22,14 @@
         <input
           type="text"
           placeholder="Enter Asset Name"
-          v-model="newAsset.symbol"
-          @keydown="assetTitleValidator($event)"
+          v-model.trim="newAsset.symbol"
         />
       </h3>
       <p class="mt-3">
         <input
           type="text"
           placeholder="Enter a description for asset"
-          v-model="newAsset.description"
+          v-model.trim="newAsset.description"
         />
       </p>
     </div>
@@ -36,6 +39,7 @@
           type="text"
           placeholder="# Shares"
           v-model.number="newAsset.amount"
+          @keypress="numberValidator"
         />
       </p>
       <i
@@ -94,7 +98,7 @@
           <input
             type="text"
             placeholder="Enter a description for asset"
-            v-model="targetAsset.description"
+            v-model.trim="targetAsset.description"
           />
         </p>
       </div>
@@ -104,6 +108,7 @@
             type="number"
             placeholder="# Shares"
             v-model.number="targetAsset.amount"
+            @keypress="numberValidator"
           />
         </p>
         <i
@@ -144,12 +149,13 @@ import { onMounted } from "@vue/runtime-core";
 import axios from "axios";
 import Modal from "./Modal.vue";
 import Spinner from "@/components/Spinner";
+import DropdownList from "@/components/DropdownList";
 import formatParams from "@/composables/formatParams";
 import { useStore } from "vuex";
 
 export default {
-  name: 'navbar',
-  components: { Modal, Spinner },
+  name: "navbar",
+  components: { Modal, Spinner, DropdownList },
   setup() {
     onMounted(async () => {
       await fetchPortfolioAssets();
@@ -179,10 +185,11 @@ export default {
         newAsset.value.amount
       ) {
         let id = route.params.port_id;
+        encodeURIComponent();
 
         let params = {
-          symbol: newAsset.value.symbol,
-          description: newAsset.value.description,
+          symbol: encodeURIComponent(newAsset.value.symbol),
+          description: encodeURIComponent(newAsset.value.description),
           amount: newAsset.value.amount,
         };
 
@@ -203,6 +210,9 @@ export default {
               router.push({
                 name: "Logout",
               });
+            }
+            if (errorCode === 409) {
+              alert("Asset already exists");
             }
           });
 
@@ -234,7 +244,7 @@ export default {
         // send request to backend
         let params = {
           symbol: targetAsset.value.symbol,
-          description: targetAsset.value.description,
+          description: encodeURIComponent(targetAsset.value.description),
           amount: targetAsset.value.amount,
         };
 
@@ -342,6 +352,17 @@ export default {
       }
     };
 
+    const optionSelected = (option) => {
+      store.commit("portfolio/updateAnalysisType", option);
+      router.push({ name: "Analysis" });
+    };
+
+    const numberValidator = (e) => {
+      if (!e.key.match(/^[0-9+.]*$/)) {
+        e.preventDefault();
+      }
+    };
+
     return {
       assets,
       title,
@@ -357,6 +378,8 @@ export default {
       showSpinner,
       noData,
       assetTitleValidator,
+      optionSelected,
+      numberValidator
     };
   },
 };
