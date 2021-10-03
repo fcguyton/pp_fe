@@ -7,7 +7,7 @@
       <router-link to="/home">Home</router-link>
       <DropdownList
         title="Analysis"
-        :options="['Wealth Index', 'Future Index']"
+        :options="['Wealth Index', 'Portfolio Stats']"
         @optionSelected="optionSelected"
       />
       <a href="#" @click="itemModal = true">New</a>
@@ -19,29 +19,37 @@
   <div v-if="itemModal" class="portfolio__item new__item">
     <div class="info">
       <h3>
-        <input
+        <input class="in1"
           type="text"
           placeholder="Enter Asset Name"
           v-model.trim="newAsset.symbol"
         />
       </h3>
       <p class="mt-3">
-        <input
+        <input class="in1"
           type="text"
           placeholder="Enter a description for asset"
           v-model.trim="newAsset.description"
         />
       </p>
     </div>
+    <div class="info2">
+      <input class="in2"
+        type="text" 
+        placeholder="# Shares"
+        v-model.number="newAsset.amount"
+        @keypress="numberValidator"
+      />
+      <input class="in2"
+        type="text" 
+        placeholder="Risk rating"
+        v-model.number="newAsset.risk_rating"
+        @keypress="numberValidator"
+      />
+    </div>
+
+    <!-- icons -->
     <div class="options">
-      <p>
-        <input
-          type="text"
-          placeholder="# Shares"
-          v-model.number="newAsset.amount"
-          @keypress="numberValidator"
-        />
-      </p>
       <i
         class="fa fa-2x fa-times text-danger mr-2"
         aria-hidden="true"
@@ -63,14 +71,16 @@
   <div v-for="asset in assets" :key="asset.id">
     <!-- Normal assets when edit button is not clicked -->
     <div v-if="asset.id !== targetAsset.id" class="portfolio__item">
+
       <div class="info">
         <h4>{{ asset.symbol }}</h4>
         <p class="mt-3">{{ asset.description }}</p>
       </div>
+      <div class="container">
+        <div class="box">{{ asset.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</div><br>
+        <div class="box">{{ asset.risk_rating }}</div>
+      </div>
       <div class="options">
-        <p class="share">
-          {{ asset.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}
-        </p>
         <i
           class="fa fa-2x fa-trash text-danger mr-2"
           aria-hidden="true"
@@ -83,6 +93,7 @@
         ></i>
       </div>
     </div>
+
     <!-- Asset in edit mode -->
     <div v-else class="portfolio__item">
       <div class="info">
@@ -102,15 +113,21 @@
           />
         </p>
       </div>
+      <div class="info2">
+        <input class="in2" 
+          type="test"
+          placeholder="# shares"
+          v-model.number="targetAsset.amount"
+          @keypress="numberValidator"
+        />
+        <input class="in2" 
+          type="test"
+          placeholder="Risk rating"
+          v-model.number="targetAsset.risk_rating"
+          @keypress="numberValidator"
+        />
+      </div>
       <div class="options">
-        <p>
-          <input
-            type="number"
-            placeholder="# Shares"
-            v-model.number="targetAsset.amount"
-            @keypress="numberValidator"
-          />
-        </p>
         <i
           class="fa fa-2x fa-times text-danger mr-2"
           aria-hidden="true"
@@ -167,7 +184,7 @@ export default {
     const title = route.params.title;
     const assets = ref([]);
     const itemModal = ref(false);
-    const newAsset = ref({ symbol: "", description: "", amount: "" });
+    const newAsset = ref({ symbol: "", description: "", amount: "", risk_rating: "" });
     const targetAsset = ref({});
     const showModal = ref(false);
     const showSpinner = ref(true);
@@ -182,7 +199,8 @@ export default {
       if (
         newAsset.value.symbol &&
         newAsset.value.description &&
-        newAsset.value.amount
+        newAsset.value.amount 
+        // newAsset.value.risk_rating
       ) {
         let id = route.params.port_id;
         encodeURIComponent();
@@ -191,6 +209,7 @@ export default {
           symbol: encodeURIComponent(newAsset.value.symbol),
           description: encodeURIComponent(newAsset.value.description),
           amount: newAsset.value.amount,
+          risk_rating: newAsset.value.risk_rating,
         };
 
         let url =
@@ -236,7 +255,8 @@ export default {
       if (
         targetAsset.value.symbol &&
         targetAsset.value.description &&
-        targetAsset.value.amount
+        targetAsset.value.amount 
+        // targetAsset.value.risk_rating
       ) {
         showSpinner.value = true;
 
@@ -246,6 +266,7 @@ export default {
           symbol: targetAsset.value.symbol,
           description: encodeURIComponent(targetAsset.value.description),
           amount: targetAsset.value.amount,
+          risk_rating: targetAsset.value.risk_rating,
         };
 
         let url =
@@ -406,9 +427,9 @@ export default {
   color: #2c3e50;
   text-decoration: none;
 }
-input {
+/* input {
   width: 100%;
-}
+} */
 
 input:read-only {
   background-color: whitesmoke;
@@ -454,5 +475,38 @@ input[type="number"] {
 .disabled {
   pointer-events: none;
   color: grey !important;
+}
+
+.info {
+  width: 60%;
+}
+
+.info2 {
+  width: 20%;
+}
+
+.in1 {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.in2 {
+  width: 75%;
+  padding: 0 10px;
+  text-align: right;
+}
+
+.container {
+  width: 20%;
+  /* border: 1px solid black; */
+}
+
+div.box {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid black;
+  float: left;
+  padding: 6px 5px;
+  text-align: right;
 }
 </style>

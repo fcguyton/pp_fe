@@ -15,20 +15,41 @@
     <div v-if="itemModal" class="portfolio__item new__item">
       <div class="info">
         <h3>
-          <input
+          <input class="in1" 
             type="text"
             placeholder="Enter portfolio name"
             v-model.trim="newPortfolio.title"
           />
         </h3>
         <p class="mt-3">
-          <input
+          <input class="in1" 
             type="text"
             placeholder="Enter a description of the portfolio"
             v-model.trim="newPortfolio.description"
           />
         </p>
       </div>
+      <div class="info2">
+          <!-- <p class="mt-3"> -->
+          <input class="in2" 
+            type="text"
+            placeholder="Peak value"
+            v-model.trim="newPortfolio.cppi_peak"
+          />
+          <input class="in2" 
+            type="text"
+            placeholder="Drawdown (%)"
+            v-model.trim="newPortfolio.cppi_drawdown"
+          />
+          <input class="in2" 
+            type="text"
+            placeholder="Multiplier"
+            v-model.trim="newPortfolio.cppi_multiplier"
+          />
+        <!-- </p> -->
+      </div>
+
+      <!-- icons -->
       <div class="options">
         <i
           class="fa fa-2x fa-times text-danger mr-2"
@@ -44,6 +65,7 @@
           @click="addPortfolio"
         ></i>
       </div>
+
     </div>
 
     <!-- List of portfolios -->
@@ -63,6 +85,13 @@
             {{ portfolio.description }}
           </p>
         </div>
+
+        <div class="container" v-if="portfolio.cppi_peak">
+          <div class="box">{{ portfolio.cppi_peak.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</div><br>
+          <div class="box">{{ portfolio.cppi_drawdown }}</div><br>
+          <div class="box">{{ portfolio.cppi_multiplier }}</div>
+        </div>
+
         <div class="options">
           <p>{{ portfolio.port_id }}</p>
           <i
@@ -75,6 +104,11 @@
             aria-hidden="true"
             @click="edit(portfolio)"
           ></i>
+          <i
+            class="fa fa-2x fa-clone ml-2"
+            aria-hidden="true"
+            @click="clonePortfolio(portfolio)"
+          ></i>
         </div>
       </div>
 
@@ -82,7 +116,7 @@
       <div v-else class="portfolio__item">
         <div class="info">
           <h3>
-            <input
+            <input class="in1"
               type="text"
               :class="{ 'is-invalid': !targetPortfolio.title }"
               placeholder="Enter Portfolio Name"
@@ -97,6 +131,26 @@
               v-model.trim="targetPortfolio.description"
             />
           </p>
+        </div>
+        <div class="info2">
+          <input class="in2"
+          type="text"
+          :class="{ 'is-invalid': !targetPortfolio.cppi_peak }"
+          placeholder="Peak value"
+          v-model.trim="targetPortfolio.cppi_peak"
+          />
+          <input class="in2"
+          type="text"
+          :class="{ 'is-invalid': !targetPortfolio.cppi_drawdown }"
+          placeholder="Drawdown (%)"
+          v-model.trim="targetPortfolio.cppi_drawdown"
+          />
+          <input class="in2"
+          type="text"
+          :class="{ 'is-invalid': !targetPortfolio.cppi_multiplier }"
+          placeholder="Multiplier"
+          v-model.trim="targetPortfolio.cppi_multiplier"
+          />
         </div>
         <div class="options">
           <i
@@ -234,6 +288,9 @@ export default {
           owner_id: userId,
           name: encodeURIComponent(newPortfolio.value.title),
           description: encodeURIComponent(newPortfolio.value.description),
+          cppi_peak: encodeURIComponent(newPortfolio.value.cppi_peak),
+          cppi_drawdown: encodeURIComponent(newPortfolio.value.cppi_drawdown),
+          cppi_multiplier: encodeURIComponent(newPortfolio.value.cppi_multiplier),
         };
         newPortfolio.value = [];
         itemModal.value = false;
@@ -267,6 +324,9 @@ export default {
           owner_id: userId,
           name: encodeURIComponent(targetPortfolio.value.title),
           description: encodeURIComponent(targetPortfolio.value.description),
+          cppi_peak: encodeURIComponent(targetPortfolio.value.cppi_peak),
+          cppi_drawdown: encodeURIComponent(targetPortfolio.value.cppi_drawdown),
+          cppi_multiplier: encodeURIComponent(targetPortfolio.value.cppi_multiplier),
         };
 
         let url =
@@ -291,8 +351,32 @@ export default {
 
         targetPortfolio.value = {};
       } else {
-        alert("missing fileds");
+        alert("missing fields");
       }
+    };
+
+    const clonePortfolio = (portfolio) => {
+
+      // showSpinner.value = true;
+      targetPortfolio.value = portfolio;
+
+      let url = base_url + "/portclone/" + targetPortfolio.value.port_id; 
+      console.log(url)
+
+      axios
+          .post(url, {}, { headers: headers })
+          .then(function (response) {
+            fetchPortfolios();
+          })
+          .catch(function (error) {
+            console.log("error while cloning portfolio: ", error.response);
+            let errorCode = error.response.status;
+            if (errorCode === 401) {
+              router.push({ name: "Logout" });
+            }
+            console.log("error while cloning portfolio: ", error.response);
+          });
+
     };
 
     const prepareData = (d) => {
@@ -303,6 +387,9 @@ export default {
       let description = Object.entries(data.description);
       let name = Object.entries(data.name);
       let owner_id = Object.entries(data.owner_id);
+      let cppi_peak = Object.entries(data.cppi_peak)
+      let cppi_drawdown = Object.entries(data.cppi_drawdown)
+      let cppi_multiplier = Object.entries(data.cppi_multiplier)
 
       let formatedData = [];
       for (let i = 0; i < description.length; i++) {
@@ -311,6 +398,9 @@ export default {
           description: description[i][1],
           title: name[i][1],
           owner_id: owner_id[i][1],
+          cppi_peak: cppi_peak[i][1],
+          cppi_drawdown: cppi_drawdown[i][1],
+          cppi_multiplier: cppi_multiplier[i][1],
         });
       }
 
@@ -334,6 +424,7 @@ export default {
       itemModal,
       deletePortfolio,
       edit,
+      clonePortfolio,
       confirmDelete,
       redirectPortfolioDetail,
       addPortfolio,
@@ -372,7 +463,11 @@ export default {
 }
 
 .info {
-  width: 50%;
+  width: 60%;
+}
+
+.info2 {
+  width: 20%;
 }
 
 .is-invalid {
@@ -389,9 +484,29 @@ export default {
   font-size: 12px;
 }
 
-input {
+.in1 {
   width: 100%;
   padding: 0 10px;
+}
+
+.in2 {
+  width: 75%;
+  padding: 0 10px;
+  text-align: right;
+}
+
+.container {
+  width: 20%;
+  /* border: 1px solid black; */
+}
+
+div.box {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid black;
+  float: left;
+  padding: 6px 5px;
+  text-align: right;
 }
 
 .disabled {
