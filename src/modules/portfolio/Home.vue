@@ -30,7 +30,6 @@
         </p>
       </div>
       <div class="info2">
-          <!-- <p class="mt-3"> -->
           <input class="in2" 
             type="text"
             placeholder="Peak value"
@@ -46,7 +45,6 @@
             placeholder="Multiplier"
             v-model.trim="newPortfolio.cppi_multiplier"
           />
-        <!-- </p> -->
       </div>
 
       <!-- icons -->

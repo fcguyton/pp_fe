@@ -7,7 +7,7 @@
       <router-link to="/home">Home</router-link>
       <DropdownList
         title="Analysis"
-        :options="['Wealth Index', 'Portfolio Stats']"
+        :options="['Wealth Index', 'Portfolio Stats', 'CPPI']"
         @optionSelected="optionSelected"
       />
       <a href="#" @click="itemModal = true">New</a>
@@ -198,8 +198,8 @@ export default {
     const addAsset = () => {
       if (
         newAsset.value.symbol &&
-        newAsset.value.description &&
-        newAsset.value.amount 
+        newAsset.value.description 
+        // newAsset.value.amount &&
         // newAsset.value.risk_rating
       ) {
         let id = route.params.port_id;
