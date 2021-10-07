@@ -16,8 +16,12 @@
       <WealthIndex />
     </div>
 
-    <div class="future_analysis_container" v-else>
-      <h1>Work in progress...</h1>
+    <div class="wealth_analysis_container" v-if="analysisType === 'Portfolio Stats'">
+      <PortfolioStats />
+    </div>
+
+    <div class="wealth_analysis_container" v-if="analysisType === 'CPPI'">
+      <CPPI />
     </div>
   </div>
 </template>
@@ -27,13 +31,14 @@ import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 import WealthIndex from "./components/WealthIndex";
+import CPPI from './components/CPPI';
+import PortfolioStats from './components/PortfolioStats';
 
 
 export default {
   name: "Analysis",
-  components: { WealthIndex },
+  components: { WealthIndex, CPPI, PortfolioStats },
   setup() {
-
     const router = useRouter();
     const store = useStore();
 

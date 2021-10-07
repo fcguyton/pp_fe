@@ -133,19 +133,16 @@
         <div class="info2">
           <input class="in2"
           type="text"
-          :class="{ 'is-invalid': !targetPortfolio.cppi_peak }"
           placeholder="Peak value"
           v-model.trim="targetPortfolio.cppi_peak"
           />
           <input class="in2"
           type="text"
-          :class="{ 'is-invalid': !targetPortfolio.cppi_drawdown }"
           placeholder="Drawdown (%)"
           v-model.trim="targetPortfolio.cppi_drawdown"
           />
           <input class="in2"
           type="text"
-          :class="{ 'is-invalid': !targetPortfolio.cppi_multiplier }"
           placeholder="Multiplier"
           v-model.trim="targetPortfolio.cppi_multiplier"
           />
@@ -203,7 +200,7 @@ export default {
     const showModal = ref(false);
     const router = useRouter();
     const itemModal = ref(false);
-    const newPortfolio = ref({});
+    const newPortfolio = ref({title: '', description: '', cppi_peak: '', cppi_multiplier: '', cppi_drawdown: ''});
     const userId = localStorage.getItem("user_id");
     const showSpinner = ref(true);
     const store = useStore();
@@ -241,7 +238,12 @@ export default {
     };
 
     const edit = (portfolio) => {
-      targetPortfolio.value = { ...portfolio };
+      // check if target portfolio has empty cppi values (i.e ' '), if so, remove them
+      let cppi_peak = portfolio.cppi_peak === ' ' ? '' : portfolio.cppi_peak
+      let cppi_drawdown = portfolio.cppi_drawdown === ' ' ? '' : portfolio.cppi_drawdown
+      let cppi_multiplier = portfolio.cppi_multiplier === ' ' ? '' : portfolio.cppi_multiplier
+
+      targetPortfolio.value = { ...portfolio, cppi_peak, cppi_drawdown, cppi_multiplier };
     };
 
     const confirmDelete = () => {
@@ -282,13 +284,19 @@ export default {
         newPortfolio.value.description &&
         userId
       ) {
+
+        // check if cppi values are empty, replace '' with ' ' so a valid
+        let cppi_peak = newPortfolio.value.cppi_peak || ' '
+        let cppi_drawdown = newPortfolio.value.cppi_drawdown || ' '
+        let cppi_multiplier = newPortfolio.value.cppi_multiplier || ' '
+
         let params = {
           owner_id: userId,
           name: encodeURIComponent(newPortfolio.value.title),
           description: encodeURIComponent(newPortfolio.value.description),
-          cppi_peak: encodeURIComponent(newPortfolio.value.cppi_peak),
-          cppi_drawdown: encodeURIComponent(newPortfolio.value.cppi_drawdown),
-          cppi_multiplier: encodeURIComponent(newPortfolio.value.cppi_multiplier),
+          cppi_peak: encodeURIComponent(cppi_peak),
+          cppi_drawdown: encodeURIComponent(cppi_drawdown),
+          cppi_multiplier: encodeURIComponent(cppi_multiplier),
         };
         newPortfolio.value = [];
         itemModal.value = false;
@@ -317,14 +325,19 @@ export default {
       if (targetPortfolio.value.title && targetPortfolio.value.description) {
         showSpinner.value = true;
 
+        // check if cppi values are empty, replace '' with ' ' so a valid
+        let cppi_peak = targetPortfolio.value.cppi_peak || ' '
+        let cppi_drawdown = targetPortfolio.value.cppi_drawdown || ' '
+        let cppi_multiplier = targetPortfolio.value.cppi_multiplier || ' '
+
         // send request to backend
         let params = {
           owner_id: userId,
           name: encodeURIComponent(targetPortfolio.value.title),
           description: encodeURIComponent(targetPortfolio.value.description),
-          cppi_peak: encodeURIComponent(targetPortfolio.value.cppi_peak),
-          cppi_drawdown: encodeURIComponent(targetPortfolio.value.cppi_drawdown),
-          cppi_multiplier: encodeURIComponent(targetPortfolio.value.cppi_multiplier),
+          cppi_peak: encodeURIComponent(cppi_peak),
+          cppi_drawdown: encodeURIComponent(cppi_drawdown),
+          cppi_multiplier: encodeURIComponent(cppi_multiplier),
         };
 
         let url =
@@ -356,9 +369,9 @@ export default {
     const clonePortfolio = (portfolio) => {
 
       // showSpinner.value = true;
-      targetPortfolio.value = portfolio;
+      // targetPortfolio.value = portfolio;
 
-      let url = base_url + "/portclone/" + targetPortfolio.value.port_id; 
+      let url = base_url + "/portclone/" + portfolio.port_id; 
       console.log(url)
 
       axios
@@ -372,7 +385,6 @@ export default {
             if (errorCode === 401) {
               router.push({ name: "Logout" });
             }
-            console.log("error while cloning portfolio: ", error.response);
           });
 
     };
@@ -501,9 +513,11 @@ export default {
 div.box {
   box-sizing: border-box;
   width: 100%;
+  height: 30px;
   border: 1px solid black;
-  float: left;
-  padding: 6px 5px;
+  /* float: left; */
+  /* padding: 6px 5px; */
+  padding: 0 5px;
   text-align: right;
 }
 

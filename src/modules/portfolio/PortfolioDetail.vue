@@ -61,7 +61,7 @@
         @click="addAsset"
         :class="{
           disabled:
-            !newAsset.symbol || !newAsset.description || !newAsset.amount,
+            !newAsset.symbol || !newAsset.description,
         }"
       ></i>
     </div>
@@ -115,13 +115,13 @@
       </div>
       <div class="info2">
         <input class="in2" 
-          type="test"
+          type="text"
           placeholder="# shares"
           v-model.number="targetAsset.amount"
           @keypress="numberValidator"
         />
         <input class="in2" 
-          type="test"
+          type="text"
           placeholder="Risk rating"
           v-model.number="targetAsset.risk_rating"
           @keypress="numberValidator"
@@ -137,7 +137,7 @@
           class="fa fa-2x fa-check ml-2 text-success"
           aria-hidden="true"
           @click="updateAsset"
-          :class="{ disabled: !targetAsset.description || !targetAsset.amount }"
+          :class="{ disabled: !targetAsset.description }"
         ></i>
       </div>
     </div>
@@ -198,19 +198,22 @@ export default {
     const addAsset = () => {
       if (
         newAsset.value.symbol &&
-        newAsset.value.description 
-        // newAsset.value.amount &&
-        // newAsset.value.risk_rating
+        newAsset.value.description
       ) {
         let id = route.params.port_id;
-        encodeURIComponent();
+
+        // check if shares and risk_rating are empty, replace nothing with ' '
+        let amount = newAsset.value.amount === '' ? ' ' : newAsset.value.amount
+        let risk_rating = newAsset.value.risk_rating === '' ? ' ' : newAsset.value.risk_rating
 
         let params = {
           symbol: encodeURIComponent(newAsset.value.symbol),
           description: encodeURIComponent(newAsset.value.description),
-          amount: newAsset.value.amount,
-          risk_rating: newAsset.value.risk_rating,
+          amount: encodeURIComponent(amount),
+          risk_rating: encodeURIComponent(risk_rating),
         };
+
+        console.log(params)
 
         let url =
           base_url + "/port-assetcreate/" + id + "?" + formatParams(params);
@@ -235,7 +238,7 @@ export default {
             }
           });
 
-        newAsset.value = [];
+        newAsset.value = {symbol: "", description: "", amount: "", risk_rating: ""};
         itemModal.value = false;
       } else {
         alert("Missing fields");
@@ -248,25 +251,31 @@ export default {
     };
 
     const editAsset = (asset) => {
-      targetAsset.value = { ...asset };
+      let amount = asset.amount === ' ' ? '' : asset.amount
+      let risk_rating = asset.risk_rating === ' ' ? '' : asset.risk_rating
+      targetAsset.value = { ...asset, amount, risk_rating };
     };
 
     const updateAsset = () => {
       if (
         targetAsset.value.symbol &&
-        targetAsset.value.description &&
-        targetAsset.value.amount 
+        targetAsset.value.description
         // targetAsset.value.risk_rating
       ) {
         showSpinner.value = true;
 
         let id = route.params.port_id;
         // send request to backend
+
+        // convert the blank values to ' ' to avoid errors
+        let amount = targetAsset.value.amount === '' ? ' ' : targetAsset.value.amount
+        let risk_rating = targetAsset.value.risk_rating === '' ? ' ' : targetAsset.value.risk_rating 
+
         let params = {
           symbol: targetAsset.value.symbol,
           description: encodeURIComponent(targetAsset.value.description),
-          amount: targetAsset.value.amount,
-          risk_rating: targetAsset.value.risk_rating,
+          amount: encodeURIComponent(amount),
+          risk_rating: encodeURIComponent(risk_rating),
         };
 
         let url =
@@ -504,9 +513,11 @@ input[type="number"] {
 div.box {
   box-sizing: border-box;
   width: 100%;
+  height: 30px;
   border: 1px solid black;
-  float: left;
-  padding: 6px 5px;
+  /* float: left;
+  padding: 6px 5px; */
+  padding: 0 5px;
   text-align: right;
 }
 </style>
