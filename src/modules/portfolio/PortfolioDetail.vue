@@ -7,7 +7,7 @@
       <router-link to="/home">Home</router-link>
       <DropdownList
         title="Analysis"
-        :options="['Wealth Index', 'Portfolio Stats', 'CPPI']"
+        :options="['Wealth Index', 'Portfolio Stats', 'CPPI', 'Simulated Returns']"
         @optionSelected="optionSelected"
       />
       <a href="#" @click="itemModal = true">New</a>

@@ -57,7 +57,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 export default {
-	name: "Analysis",
+	name: "WealthIndex",
 	components: { Chart, Grid, Spinner },
 	setup() {
 		onMounted(async () => {
@@ -84,11 +84,10 @@ export default {
 		var token = localStorage.getItem("token");
 		var headers = { "x-access-token": token };
 		var base_url = store.state.base_url;
+		var id = localStorage.getItem("port_id");
+		const componentUrl = "/analysis/wealthindex/";
 
-		const fetchAnalysisData = async () => {
-			let id = localStorage.getItem("port_id");
-			let url = base_url + "/analysis/wealthindex/" + id;
-
+		const requestData = async (url) => {
 			axios
 				.get(url, { headers: headers })
 				.then(function(response) {
@@ -124,7 +123,7 @@ export default {
 					prepareGraphData(JSON.parse(response.data));
 				})
 				.catch(function(error) {
-					console.log("error in details: ", error.response);
+					console.log("error in getting wealth index info: ", error.response);
 					let errorCode = error.response.status;
 					if (errorCode === 401) {
 						router.push({
@@ -132,6 +131,11 @@ export default {
 						});
 					}
 				});
+		}
+
+		const fetchAnalysisData = async () => {
+			let url = base_url + componentUrl + id;
+			requestData(url)
 		};
 
 		const prepareData = (data) => {

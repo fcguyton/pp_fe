@@ -23,6 +23,10 @@
     <div class="wealth_analysis_container" v-if="analysisType === 'CPPI'">
       <CPPI />
     </div>
+
+    <div class="wealth_analysis_container" v-if="analysisType === 'Simulated Returns'">
+      <SimulatedReturns />
+    </div>
   </div>
 </template>
 
@@ -33,11 +37,11 @@ import { useStore } from "vuex";
 import WealthIndex from "./components/WealthIndex";
 import CPPI from './components/CPPI';
 import PortfolioStats from './components/PortfolioStats';
-
+import SimulatedReturns from './components/SimulatedReturns.vue';
 
 export default {
   name: "Analysis",
-  components: { WealthIndex, CPPI, PortfolioStats },
+  components: { WealthIndex, CPPI, PortfolioStats, SimulatedReturns },
   setup() {
     const router = useRouter();
     const store = useStore();
