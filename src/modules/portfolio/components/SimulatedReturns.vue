@@ -1,5 +1,4 @@
 <template>
-	<h1>Simulated Returns</h1>
 	<div class="controls" :class="{ disable: !dataAvailable }">
 		<button @click="showChart = !showChart" class="btn btn-lg btn-success">
 			{{ showChart ? "Data" : "Chart" }}
@@ -84,7 +83,7 @@ export default {
 		const gridColumns = ref([]);
 		const graphSeries = ref([]);
 		const graphDate = ref([]);
-		const showChart = ref(false);
+		const showChart = ref(true);
 		const dataAvailable = ref(false);
 		const analysisType = store.getters["portfolio/getAnalysisType"];
 		const historyYear = ref('');
@@ -132,25 +131,6 @@ export default {
 
 			requestData(url)
 		};
-
-		// const prepareGraphData = (data) => {
-		// 	let myData = {};
-		// 	for (let i = 0; i < keys.value.length; i++) {
-		// 		myData[keys.value[i]] = data.map((a) => a[keys.value[i]]);
-		// 	}
-
-		// 	let plottingData = [];
-
-		// 	for (let i = 0; i < keys.value.length; i++) {
-		// 		let curve = { name: keys.value[i], data: myData[keys.value[i]] };
-		// 		plottingData.push(curve);
-		// 	}
-
-		// 	// separate the x-axis and y-axis (series) for plot
-		// 	let date = plottingData.filter((item) => item.name === "Date");
-		// 	graphDate.value = date[0].data;
-		// 	graphSeries.value = plottingData.filter((item) => item.name !== "Date");
-		// };
 
 		const dataIsAvailable = () => (dataAvailable.value = true);
 
