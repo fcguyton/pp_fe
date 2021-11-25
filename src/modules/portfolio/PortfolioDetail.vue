@@ -226,7 +226,8 @@ export default {
             fetchPortfolioAssets();
           })
           .catch(function (error) {
-            console.log("error while adding asset", error.response);
+            alert(error.response.data['message']);
+            console.log("error message: ", error.response.data['message']);
             let errorCode = error.response.status;
             if (errorCode === 401) {
               router.push({
