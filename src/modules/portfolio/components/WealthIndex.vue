@@ -10,7 +10,6 @@
 				maxlength="4"
 				ref="startInput"
 				v-model="startDate"
-				@keypress="dateValidator"
 				placeholder="Start year"
 			/>
 			<input
@@ -19,7 +18,6 @@
 				maxlength="4"
 				ref="endInput"
 				v-model="endDate"
-				@keypress="dateValidator"
 				placeholder="End year"
 			/>
 			<i
@@ -101,9 +99,9 @@ export default {
 
 					// save min and max Dates. These will be extreme date values a user can enter in the inputs
 					minDate.value = parseInt(dayjs(data[0].Date).format("YYYY"));
-					maxDate.value = parseInt(
-						dayjs(data[data.length - 1].Date).format("YYYY")
-					);
+					startDate.value = minDate.value
+					maxDate.value = parseInt(dayjs(data[data.length - 1].Date).format("YYYY"));
+					endDate.value = maxDate.value
 
 					// set the min and max Dates in the store so that other analysis components can use them for reference
 					store.commit("portfolio/updateStartDate", minDate.value);
@@ -134,8 +132,8 @@ export default {
 		}
 
 		const fetchAnalysisData = async () => {
-			let url = base_url + componentUrl + id;
-			requestData(url)
+			let url = base_url + componentUrl + id + "?start_year=" + startDate.value + "&end_year=" + endDate.value;
+		requestData(url)
 		};
 
 		const prepareData = (data) => {
@@ -173,8 +171,8 @@ export default {
 		};
 
 		const reloadData = () => {
-			startDate.value = null;
-			endDate.value = null;
+			// startDate.value = null;
+			// endDate.value = null;
 			dataAvailable.value = false;
 			fetchAnalysisData();
 		};
@@ -217,13 +215,13 @@ export default {
 			prepareGraphData(formatForGraph);
 		};
 
-		watch(startDate, () => {
-			filterData(true);
-		});
+		// watch(startDate, () => {
+		// 	filterData(true);
+		// });
 
-		watch(endDate, () => {
-			filterData(false);
-		});
+		// watch(endDate, () => {
+		// 	filterData(false);
+		// });
 
 		return {
 			analysisData,
