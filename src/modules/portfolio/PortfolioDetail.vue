@@ -77,7 +77,7 @@
         <p class="mt-3">{{ asset.description }}</p>
       </div>
       <div class="container">
-        <div class="box">{{ asset.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</div><br>
+        <div class="box">{{ Number(asset.amount.toFixed(3)).toLocaleString('en') }}</div><br>
         <div class="box">{{ asset.risk_rating }}</div>
       </div>
       <div class="options">

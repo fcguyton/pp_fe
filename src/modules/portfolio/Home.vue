@@ -32,7 +32,7 @@
       <div class="info2">
           <input class="in2" 
             type="text"
-            placeholder="Peak value"
+            placeholder="Account Name"
             v-model.trim="newPortfolio.cppi_peak"
           />
           <input class="in2" 
@@ -133,7 +133,7 @@
         <div class="info2">
           <input class="in2"
           type="text"
-          placeholder="Peak value"
+          placeholder="Account Name"
           v-model.trim="targetPortfolio.cppi_peak"
           />
           <input class="in2"
@@ -500,7 +500,7 @@ export default {
 }
 
 .in2 {
-  width: 75%;
+  width: 90%;
   padding: 0 10px;
   text-align: right;
 }
